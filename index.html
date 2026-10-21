@@ -1,0 +1,1044 @@
+<title>Ruta Arcade Educativa</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Press+Start+2P&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<style>
+/* Layout: cianotipo de taller — cuestionario a la izquierda, blueprint vivo a la derecha sobre papel cuadriculado */
+:root {
+  --paper: #eef2fa;
+  --surface: #ffffff;
+  --ink: #14244a;
+  --muted: #55648a;
+  --line: #cdd6ea;
+  --grid: rgba(36, 87, 214, 0.08);
+  --accent: #2457d6;
+  --accent-soft: rgba(36, 87, 214, 0.1);
+  --accent-ink: #ffffff;
+  --coin: #b97f00;
+  --coin-soft: rgba(232, 164, 0, 0.16);
+  --warn: #a8431a;
+  --ok: #1b7348;
+  --f-display: "Press Start 2P", "Courier New", monospace;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0a1631; --surface: #10204a; --ink: #e6ecff; --muted: #9eaed6; --line: #26396c;
+    --grid: rgba(122, 162, 255, 0.07); --accent: #7fa6ff; --accent-soft: rgba(127, 166, 255, 0.14); --accent-ink: #0a1631;
+    --coin: #ffc94a; --coin-soft: rgba(255, 201, 74, 0.14); --warn: #ff9f73; --ok: #63d39d;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0a1631; --surface: #10204a; --ink: #e6ecff; --muted: #9eaed6; --line: #26396c;
+  --grid: rgba(122, 162, 255, 0.07); --accent: #7fa6ff; --accent-soft: rgba(127, 166, 255, 0.14); --accent-ink: #0a1631;
+  --coin: #ffc94a; --coin-soft: rgba(255, 201, 74, 0.14); --warn: #ff9f73; --ok: #63d39d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 16px;
+  line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 48px;
+}
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+button, input, textarea, select { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+.wrap { max-width: 1240px; margin: 0 auto; display: grid; gap: 20px; }
+
+/* Cabecera */
+.masthead { display: grid; gap: 14px; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.masthead h1 { font-family: var(--f-display); font-size: clamp(18px, 3.2vw, 28px); line-height: 1.35; letter-spacing: 0.02em; }
+.masthead h1 span { color: var(--accent); }
+.lede { max-width: 68ch; color: var(--muted); font-size: 17px; }
+
+/* Ruta de 5 pasos */
+.route { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; border: 1.5px solid var(--ink); border-radius: var(--r); background: var(--surface); overflow: hidden; }
+.route li { padding: 12px 14px; display: grid; gap: 4px; align-content: start; border-right: 1px dashed var(--line); min-width: 0; }
+.route li:last-child { border-right: 0; }
+.route .n { font-family: var(--f-display); font-size: 10px; color: var(--accent); }
+.route b { font-size: 15px; }
+.route small { color: var(--muted); font-size: 13px; line-height: 1.35; }
+.route li.here { background: var(--accent-soft); }
+@media (max-width: 860px) {
+  .route { grid-template-columns: 1fr; }
+  .route li { border-right: 0; border-bottom: 1px dashed var(--line); grid-template-columns: 28px 1fr; column-gap: 8px; }
+  .route li:last-child { border-bottom: 0; }
+  .route .n { grid-row: span 2; padding-top: 4px; }
+}
+
+/* Dos columnas */
+.studio { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 20px; align-items: start; }
+@media (max-width: 980px) { .studio { grid-template-columns: 1fr; } }
+
+.panel { background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--r); min-width: 0; }
+
+/* Cuestionario */
+.quiz { padding: 20px; display: grid; gap: 18px; }
+.quiz-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.stepcount { font-family: var(--f-mono); font-size: 13px; color: var(--muted); }
+.stepcount b { color: var(--ink); }
+.ghost { background: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: 13px; cursor: pointer; color: var(--muted); }
+.ghost:hover { border-color: var(--accent); color: var(--accent); }
+.dots { display: flex; gap: 6px; flex-wrap: wrap; }
+.dot { width: 30px; height: 30px; border-radius: 6px; border: 1.5px solid var(--line); background: var(--surface); font-family: var(--f-mono); font-size: 12px; cursor: pointer; color: var(--muted); }
+.dot.done { border-color: var(--accent); color: var(--accent); }
+.dot.now { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.dot.need { border-color: var(--warn); color: var(--warn); }
+.q-title { font-size: 22px; line-height: 1.25; }
+.q-help { color: var(--muted); font-size: 15px; max-width: 60ch; }
+.fields { display: grid; gap: 16px; }
+.field { display: grid; gap: 6px; min-width: 0; }
+.field > label, .field > .lab { font-weight: 700; font-size: 15px; }
+.field .hint { font-size: 13px; color: var(--muted); }
+.req { color: var(--warn); font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; margin-left: 6px; }
+input[type="text"], textarea, select {
+  width: 100%; background: var(--paper); border: 1.5px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 15px;
+}
+textarea { min-height: 96px; resize: vertical; line-height: 1.45; }
+input[type="text"]:focus, textarea:focus { border-color: var(--accent); outline: none; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1.5px solid var(--line); background: var(--surface); border-radius: 999px; padding: 5px 12px; font-size: 14px; cursor: pointer; }
+.chip:hover { border-color: var(--accent); }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.mech { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
+.mech button { text-align: left; border: 1.5px solid var(--line); background: var(--surface); border-radius: 8px; padding: 10px 12px; cursor: pointer; display: grid; gap: 2px; }
+.mech button b { font-size: 15px; }
+.mech button span { font-size: 13px; color: var(--muted); line-height: 1.35; }
+.mech button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+.upload { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.upload .thumb { width: 64px; height: 64px; border-radius: 6px; border: 1.5px dashed var(--line); display: grid; place-items: center; overflow: hidden; color: var(--muted); font-size: 11px; font-family: var(--f-mono); flex: none; }
+.upload .thumb img { width: 100%; height: 100%; object-fit: cover; }
+.upload input[type="file"] { font-size: 13px; max-width: 100%; }
+.upload .x { font-size: 13px; }
+.toggle { display: flex; gap: 10px; align-items: center; font-size: 15px; }
+.toggle input { width: 20px; height: 20px; accent-color: var(--accent); }
+.nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 16px; }
+.btn { border: 1.5px solid var(--ink); background: var(--surface); border-radius: 8px; padding: 10px 16px; font-weight: 700; cursor: pointer; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.coin { background: var(--coin); border-color: var(--coin); color: #1b1300; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn:not(:disabled):hover { transform: translateY(-1px); }
+
+/* Blueprint */
+.bp { display: grid; }
+.bp-bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 2; background: var(--surface); border-bottom: 1.5px solid var(--line); border-radius: var(--r) var(--r) 0 0; padding: 14px 18px; display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.bp-bar .eyebrow { margin-bottom: 2px; }
+.bp-bar h2 { font-size: 18px; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.status { font-size: 14px; padding: 10px 18px; border-bottom: 1px solid var(--line); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.pill { font-family: var(--f-mono); font-size: 12px; border-radius: 999px; padding: 3px 10px; border: 1px solid currentColor; }
+.pill.ok { color: var(--ok); }
+.pill.warn { color: var(--warn); }
+.toast { font-size: 14px; color: var(--ok); }
+.pdfmsg { flex-basis: 100%; border: 1.5px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 14px; display: grid; gap: 6px; background: var(--paper); }
+.pdfmsg.ok { border-color: var(--ok); }
+.pdfmsg.err { border-color: var(--warn); }
+.pdfmsg.wait { border-color: var(--accent); }
+.pdfmsg b { font-weight: 700; }
+.pdfmsg .code { font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.pdfmsg .row { display: flex; gap: 8px; flex-wrap: wrap; }
+.toast.err { color: var(--warn); }
+.doc { padding: 18px; display: grid; gap: 22px; min-width: 0; }
+.doc section { display: grid; gap: 10px; min-width: 0; }
+.doc h3 { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); border-bottom: 1px dashed var(--line); padding-bottom: 6px; }
+.gamename { font-family: var(--f-display); font-size: clamp(16px, 2.4vw, 22px); line-height: 1.4; }
+.meta { color: var(--muted); font-size: 14px; }
+.kv { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 6px 14px; font-size: 15px; }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 520px) { .kv { grid-template-columns: 1fr; } .kv dd { margin-bottom: 6px; } }
+.ideas { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.prompt-box { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; font-family: var(--f-mono); font-size: 13px; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
+table.matrix { border-collapse: collapse; min-width: 900px; font-size: 13px; line-height: 1.4; }
+.matrix th, .matrix td { border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+.matrix thead th { background: var(--accent); color: var(--accent-ink); font-family: var(--f-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.04em; position: sticky; top: 0; }
+.matrix tbody th { background: var(--accent-soft); font-family: var(--f-mono); font-size: 12px; width: 120px; }
+.matrix tr.line-vis td, .matrix tr.line-vis th { border-bottom: 2px dashed var(--accent); }
+.legend { font-size: 13px; color: var(--muted); }
+.spec { margin: 0; padding-left: 20px; display: grid; gap: 5px; font-size: 14px; }
+.checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; font-size: 14px; }
+.checks li::before { content: "[ ] "; font-family: var(--f-mono); color: var(--accent); }
+.annex { display: flex; gap: 12px; flex-wrap: wrap; }
+.annex figure { margin: 0; width: 140px; display: grid; gap: 4px; }
+.annex img { width: 140px; height: 140px; object-fit: contain; background: var(--paper); border: 1px solid var(--line); border-radius: 6px; }
+.annex figcaption { font-size: 12px; color: var(--muted); }
+details summary { cursor: pointer; font-weight: 700; }
+.next { background: var(--coin-soft); border: 1.5px solid var(--coin); border-radius: var(--r); padding: 16px 18px; display: grid; gap: 8px; }
+.next ol { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.mono { font-family: var(--f-mono); font-size: 13px; }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <p class="eyebrow">Ruta metodológica · Juegos arcade educativos con IA</p>
+    <h1>Ruta <span>Arcade</span> Educativa</h1>
+    <p class="lede">Responde 8 preguntas cortas y obtén un service blueprint en PDF que Claude interpreta para construir un prototipo jugable en un solo archivo HTML, con el mismo nivel de detalle de MinutoShake.</p>
+    <ol class="route" aria-label="Pasos de la ruta">
+      <li class="here"><span class="n">01</span><b>Definir</b><small>Cuestionario: tema, objetivo de aprendizaje, personaje, misión.</small></li>
+      <li class="here"><span class="n">02</span><b>Blueprint</b><small>Descarga el PDF con la matriz y la especificación técnica.</small></li>
+      <li><span class="n">03</span><b>Construir</b><small>Adjunta el PDF y tus imágenes en Claude y pide el juego.</small></li>
+      <li><span class="n">04</span><b>Probar</b><small>Juega y marca la lista de criterios de aceptación.</small></li>
+      <li><span class="n">05</span><b>Mejorar</b><small>Pide ajustes con la fórmula: etapa, acción, respuesta.</small></li>
+    </ol>
+  </header>
+
+  <div class="studio">
+    <form class="panel quiz" id="quiz" autocomplete="off">
+      <div class="quiz-head">
+        <p class="stepcount">Pregunta <b id="stepNum">1</b> de <b id="stepTotal">8</b></p>
+        <div class="actions">
+          <button type="button" class="ghost" id="btnExample">Cargar ejemplo MinutoShake</button>
+          <button type="button" class="ghost" id="btnReset">Empezar en blanco</button>
+        </div>
+      </div>
+      <div class="dots" id="dots"></div>
+      <div id="resetConfirm" class="status" hidden>
+        <span>¿Borrar todas las respuestas?</span>
+        <button type="button" class="btn" id="btnResetYes">Sí, borrar</button>
+        <button type="button" class="ghost" id="btnResetNo">Cancelar</button>
+      </div>
+      <div>
+        <h2 class="q-title" id="qTitle"></h2>
+        <p class="q-help" id="qHelp"></p>
+      </div>
+      <div class="fields" id="fields"></div>
+      <div class="nav">
+        <button type="button" class="btn" id="btnPrev">← Anterior</button>
+        <button type="button" class="btn primary" id="btnNext">Siguiente →</button>
+      </div>
+    </form>
+
+    <article class="panel bp" aria-live="polite">
+      <div class="bp-bar">
+        <div>
+          <p class="eyebrow">Service blueprint · vista previa</p>
+          <h2>Lo que recibirá Claude</h2>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn" id="btnCopy">Copiar prompt</button>
+          <button type="button" class="btn coin" id="btnPdf">Descargar PDF</button>
+        </div>
+        <div class="pdfmsg" id="pdfMsg" role="status" hidden></div>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="doc" id="doc"></div>
+    </article>
+  </div>
+
+  <section class="next" aria-labelledby="nextTitle">
+    <h2 id="nextTitle" style="font-size:18px">Paso 3: cómo pedirle el juego a Claude</h2>
+    <ol>
+      <li>Abre una conversación nueva en Claude.</li>
+      <li>Adjunta el PDF del blueprint y, si cargaste imágenes, también los archivos originales (Claude los incrusta tal cual en el juego).</li>
+      <li>Escribe: <span class="mono">Construye el videojuego de este service blueprint en un solo archivo HTML. Cumple la especificación técnica y verifica los criterios de aceptación antes de entregarlo.</span></li>
+      <li>Juega, marca los criterios y pide mejoras con la fórmula: <span class="mono">En la etapa ___, cuando el jugador ___, quiero que el juego ___.</span></li>
+    </ol>
+  </section>
+</div>
+
+<script>
+// ---------- Datos de apoyo ----------
+const MECHS = {
+  esquivar: {
+    label: "Esquivar y llegar a la meta",
+    desc: "Avanza hacia la derecha esquivando lo que cae.",
+    metaHint: "Ej.: la zona segura",
+    action: c => `Mueve a ${c.p} con las flechas ← → (o los botones táctiles) y salta con Espacio para esquivar ${c.d} mientras avanza hasta ${c.goal}, ubicada a la derecha de la pantalla.`,
+    response: c => `Caen ${c.d} desde arriba; si uno toca a ${c.p}, pierde una vida. Al entrar en ${c.goal} (zona marcada, sin obstáculos) supera el nivel.`
+  },
+  atrapar: {
+    label: "Atrapar lo correcto",
+    desc: "Recoge lo que ayuda y evita lo que daña.",
+    metaHint: "Ej.: atrapar 10 alimentos saludables",
+    action: c => `Mueve a ${c.p} con ← → (o botones táctiles) para atrapar los objetos correctos y evitar ${c.d}. Supera el nivel al cumplir la meta: ${c.goal}.`,
+    response: c => `Caen objetos correctos e incorrectos mezclados; cada correcto suma puntos y avanza un contador visible; cada ${c.d} atrapado quita una vida.`
+  },
+  plataformas: {
+    label: "Plataformas y saltos",
+    desc: "Salta entre plataformas hasta la salida.",
+    metaHint: "Ej.: la puerta de salida",
+    action: c => `Mueve a ${c.p} con ← → y salta con Espacio entre plataformas, evitando ${c.d} y los huecos, hasta llegar a ${c.goal}.`,
+    response: c => `La pantalla avanza de izquierda a derecha; tocar ${c.d} o caer en un hueco quita una vida y devuelve al último punto seguro; ${c.goal} se ve desde el inicio.`
+  },
+  laberinto: {
+    label: "Laberinto con salida",
+    desc: "Encuentra el camino evitando peligros.",
+    metaHint: "Ej.: el punto de encuentro",
+    action: c => `Mueve a ${c.p} por un laberinto visto desde arriba con las flechas (o un control táctil en cruz), evitando ${c.d}, hasta encontrar ${c.goal}.`,
+    response: c => `Los ${c.d} se mueven por los pasillos con patrones simples; tocarlos quita una vida. Las paredes bloquean el paso; ${c.goal} brilla para orientarse.`
+  },
+  clasificar: {
+    label: "Clasificar lo que cae",
+    desc: "Recibe lo correcto en la canasta y deja pasar lo incorrecto.",
+    metaHint: "Ej.: clasificar 15 residuos",
+    action: c => `Mueve a ${c.p} con una canasta usando ← → para recibir los objetos correctos y dejar caer ${c.d}. Supera el nivel al cumplir la meta: ${c.goal}.`,
+    response: c => `Cada objeto correcto recibido suma puntos; recibir ${c.d} quita una vida y muestra por qué no correspondía.`
+  }
+};
+
+const MUSIC = [
+  "Tocata y fuga en re menor (Bach)",
+  "Para Elisa (Beethoven)",
+  "En la gruta del rey de la montaña (Grieg)",
+  "Pequeña serenata nocturna (Mozart)",
+  "Melodía original alegre"
+];
+
+const LEVEL_TUNING = [
+  { mult: 1.0, spawn: 30 },
+  { mult: 1.6, spawn: 16 },
+  { mult: 2.0, spawn: 12 }
+];
+
+const EMPTY = {
+  tema: "", publico: "", lugar: "",
+  objetivo: "", ideas: "", error: "",
+  personaje: "", personajeDesc: "",
+  escenario: "", estilo: "Pixel art 8 bits",
+  mecanica: "esquivar", meta: "", niveles: "2",
+  danino: "", ayuda: "",
+  transicion: "", evento: "",
+  tipsExtra: "", ranking: true,
+  musica: MUSIC[0], nombre: ""
+};
+
+const EXAMPLE = {
+  tema: "Simulacro de evacuación por sismo",
+  publico: "Universitarios y colaboradores",
+  lugar: "Universidad Minuto de Dios, Engativá, Calle 80, Bogotá",
+  objetivo: "Al terminar, el jugador será capaz de aplicar el protocolo de evacuación por sismo: protegerse durante el movimiento, evacuar en orden y llegar al punto de encuentro.",
+  ideas: "Durante el temblor: agacharse, cubrirse y agarrarse\nAlejarse de ventanas y objetos que puedan caer\nEvacuar cuando termine el movimiento, sin correr, sin gritar, sin empujar\nNunca usar el ascensor\nIr al punto de encuentro y no regresar hasta que la brigada lo autorice",
+  error: "Salir corriendo mientras tiembla o usar el ascensor.",
+  personaje: "Padre Diego Jaramillo",
+  personajeDesc: "Sacerdote de cabello blanco, gafas grandes, traje negro con cuello clerical blanco y sonrisa apacible.",
+  escenario: "Calle frente a la Universidad Minuto de Dios con edificios agrietados, letreros de la universidad y de Engativá Calle 80.",
+  estilo: "Pixel art 8 bits",
+  mecanica: "esquivar", meta: "la zona segura", niveles: "2",
+  danino: "rocas y escombros", ayuda: "el logo de Manuelita",
+  transicion: "Dios mío, en tus manos ponemos este temblor que ya pasó y la réplica que llega.",
+  evento: "Llega la réplica: la pantalla tiembla en rojo y los escombros caen más rápido.",
+  tipsExtra: "", ranking: true,
+  musica: MUSIC[0], nombre: "MinutoShake"
+};
+
+// Imágenes opcionales (solo en memoria; no se guardan en el navegador)
+const IMG_SLOTS = {
+  portada: { label: "Portada", use: "Pantalla de portada a tamaño completo, sin recortar." },
+  transicion: { label: "Mensaje entre niveles", use: "Pantalla de transición entre niveles, exacta y a pantalla completa." },
+  personaje: { label: "Personaje", use: "Referencia visual para dibujar al personaje en pixel art." },
+  ayuda: { label: "Objeto que da vida", use: "Sprite del objeto que da vida: cuadrado, en la misma proporción que los obstáculos (22 a 38 px)." }
+};
+const images = {};
+
+let state = load();
+let step = 0;
+
+// ---------- Preguntas ----------
+const STEPS = [
+  {
+    title: "¿De qué trata el juego y para quién es?",
+    help: "Elige un tema o escribe el tuyo. El público define el tono, la dificultad y el lenguaje.",
+    fields: [
+      { key: "tema", label: "Tema", type: "text", req: true, placeholder: "Ej.: Prevención de incendios en casa",
+        chips: ["Simulacro de evacuación por sismo", "Prevención de incendios", "Primeros auxilios", "Reciclaje y residuos", "Seguridad vial", "Alimentación saludable", "Autocuidado y salud mental"] },
+      { key: "publico", label: "Público", type: "text", placeholder: "Ej.: estudiantes de 10 a 12 años",
+        chips: ["Niños de 8 a 12 años", "Adolescentes", "Universitarios y colaboradores", "Adultos de la comunidad"] },
+      { key: "lugar", label: "Institución o lugar (opcional)", type: "text", placeholder: "Ej.: Colegio San José, sede norte" }
+    ]
+  },
+  {
+    title: "¿Qué debe aprender el jugador?",
+    help: "Este es el corazón del juego. Claude usará estas ideas para las mecánicas, los mensajes al perder una vida y la verificación final.",
+    fields: [
+      { key: "objetivo", label: "Objetivo de aprendizaje", type: "area", req: true, rows: 3,
+        placeholder: "Al terminar, el jugador será capaz de…" ,
+        hint: "Empieza con «Al terminar, el jugador será capaz de» y un verbo observable: identificar, aplicar, elegir, ordenar." },
+      { key: "ideas", label: "Ideas clave (una por línea, de 3 a 5)", type: "area", req: true, rows: 5,
+        placeholder: "Durante el temblor: agacharse, cubrirse y agarrarse\nNunca usar el ascensor",
+        hint: "Escribe conductas correctas y concretas. Si el tema tiene un protocolo oficial, usa sus palabras." },
+      { key: "error", label: "Error común que el juego debe corregir", type: "text",
+        placeholder: "Ej.: salir corriendo mientras tiembla" }
+    ]
+  },
+  {
+    title: "¿Quién es el protagonista?",
+    help: "Describe cómo se ve para que Claude lo dibuje en pixel art. Si tienes una imagen de referencia, súbela.",
+    fields: [
+      { key: "personaje", label: "Nombre del personaje", type: "text", req: true, placeholder: "Ej.: la brigadista Laura" },
+      { key: "personajeDesc", label: "Cómo se ve", type: "area", rows: 3,
+        placeholder: "Colores, ropa, accesorios, rasgos que lo hacen reconocible",
+        hint: "Tres rasgos distintivos bastan: ej. chaleco naranja, casco blanco, cola de caballo." },
+      { key: "personaje", img: "personaje", type: "image", label: "Imagen de referencia (opcional)" }
+    ]
+  },
+  {
+    title: "¿Dónde ocurre y cómo se ve?",
+    help: "Los detalles del lugar real (letreros, edificios, colores) hacen que el grupo se reconozca en el juego.",
+    fields: [
+      { key: "escenario", label: "Escenario", type: "area", rows: 3, req: true,
+        placeholder: "Ej.: pasillo del colegio con salones, extintores y la salida de emergencia al fondo" },
+      { key: "estilo", label: "Estilo visual", type: "chips-only",
+        chips: ["Pixel art 8 bits", "Pixel art 16 bits", "Plano y minimalista", "Caricatura con contornos gruesos"] }
+    ]
+  },
+  {
+    title: "¿Cuál es la misión?",
+    help: "Elige la mecánica arcade y la meta de cada nivel. Entre niveles ocurre un evento que sube la dificultad.",
+    fields: [
+      { key: "mecanica", label: "Mecánica", type: "mech" },
+      { key: "meta", label: "Meta del nivel", type: "text", req: true, placeholderFrom: "mecanica" },
+      { key: "niveles", label: "Número de niveles", type: "chips-only", chips: ["2", "3"] }
+    ]
+  },
+  {
+    title: "¿Qué daña y qué ayuda?",
+    help: "Lo que ayuda aparece mucho menos que lo que daña: más o menos uno por cada ocho obstáculos.",
+    fields: [
+      { key: "danino", label: "Obstáculos que quitan vidas", type: "text", req: true, placeholder: "Ej.: llamas y humo",
+        chips: ["rocas y escombros", "llamas y humo", "vidrios rotos", "residuos mal clasificados", "autos a alta velocidad"] },
+      { key: "ayuda", label: "Objeto que da una vida", type: "text", placeholder: "Ej.: un extintor, un botiquín, el logo de la institución" },
+      { key: "ayuda", img: "ayuda", type: "image", label: "Imagen del objeto que da vida (opcional)" }
+    ]
+  },
+  {
+    title: "¿Qué pasa entre niveles?",
+    help: "Es el momento que el grupo recordará: un mensaje, una imagen o un giro en la historia.",
+    fields: [
+      { key: "transicion", label: "Mensaje entre niveles", type: "area", rows: 3,
+        placeholder: "Ej.: ¡El fuego se extiende! Mantén la calma y sigue la ruta." },
+      { key: "transicion", img: "transicion", type: "image", label: "Imagen para ese momento (opcional, se usará exacta)" },
+      { key: "evento", label: "Qué cambia en el siguiente nivel", type: "text",
+        placeholder: "Ej.: aparece humo que reduce la visibilidad y los obstáculos caen más rápido" }
+    ]
+  },
+  {
+    title: "Últimos toques",
+    help: "Ponle nombre, música y portada. Al terminar, descarga el PDF.",
+    fields: [
+      { key: "nombre", label: "Nombre del juego", type: "text", req: true, placeholder: "Ej.: FuegoRun" },
+      { key: "musica", label: "Música 8 bits (obras de dominio público)", type: "chips-only", chips: MUSIC },
+      { key: "nombre", img: "portada", type: "image", label: "Imagen de portada (opcional, se usará exacta)" },
+      { key: "tipsExtra", label: "Recomendaciones extra al perder una vida (opcional, una por línea)", type: "area", rows: 3,
+        hint: "Claude completará entre 12 y 16 recomendaciones a partir de tus ideas clave." },
+      { key: "ranking", label: "Registro de nombre y tabla de mejores puntajes al final", type: "toggle" }
+    ]
+  }
+];
+
+// ---------- Utilidades ----------
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const ideaList = () => state.ideas.split("\n").map(s => s.trim()).filter(Boolean);
+const tipList = () => state.tipsExtra.split("\n").map(s => s.trim()).filter(Boolean);
+const trimDot = s => String(s || "").trim().replace(/[.\s]+$/, "");
+const slug = s => (s || "juego").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "juego";
+
+function load() {
+  try {
+    const raw = JSON.parse(localStorage.getItem("ruta-arcade") || "null");
+    if (raw && typeof raw === "object") return Object.assign({}, EMPTY, raw);
+  } catch (e) {}
+  return Object.assign({}, EMPTY);
+}
+function save() {
+  try { localStorage.setItem("ruta-arcade", JSON.stringify(state)); } catch (e) {}
+}
+
+function missing() {
+  const m = [];
+  if (!state.tema.trim()) m.push([0, "tema"]);
+  if (!state.objetivo.trim()) m.push([1, "objetivo de aprendizaje"]);
+  if (ideaList().length < 2) m.push([1, "al menos 2 ideas clave"]);
+  if (!state.personaje.trim()) m.push([2, "personaje"]);
+  if (!state.escenario.trim()) m.push([3, "escenario"]);
+  if (!state.meta.trim()) m.push([4, "meta del nivel"]);
+  if (!state.danino.trim()) m.push([5, "obstáculos"]);
+  if (!state.nombre.trim()) m.push([7, "nombre del juego"]);
+  return m;
+}
+
+// ---------- Cuestionario ----------
+function renderStep() {
+  const s = STEPS[step];
+  $("#stepNum").textContent = step + 1;
+  $("#stepTotal").textContent = STEPS.length;
+  $("#qTitle").textContent = s.title;
+  $("#qHelp").textContent = s.help;
+  $("#btnPrev").disabled = step === 0;
+  $("#btnNext").textContent = step === STEPS.length - 1 ? "Ver blueprint completo ↓" : "Siguiente →";
+
+  const need = new Set(missing().map(m => m[0]));
+  $("#dots").innerHTML = STEPS.map((_, i) =>
+    `<button type="button" class="dot ${i === step ? "now" : need.has(i) ? "need" : "done"}" data-go="${i}" aria-label="Ir a la pregunta ${i + 1}">${i + 1}</button>`).join("");
+
+  const box = $("#fields");
+  box.innerHTML = "";
+  s.fields.forEach((f, idx) => box.appendChild(renderField(f, idx)));
+}
+
+function renderField(f, idx) {
+  const wrap = document.createElement("div");
+  wrap.className = "field";
+  const id = `f-${step}-${idx}`;
+  const req = f.req ? '<span class="req">obligatorio</span>' : "";
+
+  if (f.type === "image") {
+    const slot = IMG_SLOTS[f.img];
+    const cur = images[f.img];
+    wrap.innerHTML = `<span class="lab">${esc(f.label)}</span>
+      <div class="upload">
+        <div class="thumb">${cur ? `<img src="${cur.dataUrl}" alt="">` : "sin imagen"}</div>
+        <div style="display:grid;gap:6px;min-width:0">
+          <input type="file" id="${id}" accept="image/png,image/jpeg,image/webp">
+          ${cur ? `<button type="button" class="ghost x" data-clear="${f.img}">Quitar imagen</button>` : ""}
+        </div>
+      </div>
+      <span class="hint">${esc(slot.use)} Las imágenes no se guardan al cerrar la página.</span>`;
+    wrap.querySelector("input").addEventListener("change", e => readImage(e.target.files[0], f.img));
+    const clr = wrap.querySelector("[data-clear]");
+    if (clr) clr.addEventListener("click", () => { delete images[f.img]; renderStep(); renderDoc(); });
+    return wrap;
+  }
+
+  if (f.type === "toggle") {
+    wrap.innerHTML = `<label class="toggle" for="${id}"><input type="checkbox" id="${id}" ${state[f.key] ? "checked" : ""}> ${esc(f.label)}</label>`;
+    wrap.querySelector("input").addEventListener("change", e => { state[f.key] = e.target.checked; changed(); });
+    return wrap;
+  }
+
+  if (f.type === "mech") {
+    wrap.innerHTML = `<span class="lab">${esc(f.label)}</span><div class="mech">${Object.entries(MECHS).map(([k, m]) =>
+      `<button type="button" aria-pressed="${state.mecanica === k}" data-mech="${k}"><b>${esc(m.label)}</b><span>${esc(m.desc)}</span></button>`).join("")}</div>`;
+    wrap.querySelectorAll("[data-mech]").forEach(b => b.addEventListener("click", () => {
+      state.mecanica = b.dataset.mech; changed(); renderStep();
+    }));
+    return wrap;
+  }
+
+  const chips = f.chips ? `<div class="chips">${f.chips.map(c =>
+    `<button type="button" class="chip" aria-pressed="${state[f.key] === c}" data-chip="${esc(c)}">${esc(c)}</button>`).join("")}</div>` : "";
+
+  if (f.type === "chips-only") {
+    wrap.innerHTML = `<span class="lab">${esc(f.label)}</span>${chips}`;
+  } else {
+    const ph = f.placeholderFrom ? MECHS[state.mecanica].metaHint : (f.placeholder || "");
+    const input = f.type === "area"
+      ? `<textarea id="${id}" rows="${f.rows || 3}" placeholder="${esc(ph)}">${esc(state[f.key])}</textarea>`
+      : `<input type="text" id="${id}" value="${esc(state[f.key])}" placeholder="${esc(ph)}">`;
+    wrap.innerHTML = `<label for="${id}">${esc(f.label)}${req}</label>${chips}${input}${f.hint ? `<span class="hint">${esc(f.hint)}</span>` : ""}`;
+    wrap.querySelector(f.type === "area" ? "textarea" : "input").addEventListener("input", e => { state[f.key] = e.target.value; changed(); });
+  }
+  wrap.querySelectorAll("[data-chip]").forEach(b => b.addEventListener("click", () => {
+    state[f.key] = b.dataset.chip;
+    const inp = wrap.querySelector("input[type=text], textarea");
+    if (inp) inp.value = b.dataset.chip;
+    wrap.querySelectorAll("[data-chip]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    changed();
+  }));
+  return wrap;
+}
+
+function readImage(file, slot) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const img = new Image();
+    img.onload = () => {
+      // Copia liviana para el PDF (máx. 1400 px); el original se adjunta aparte en Claude
+      const max = 1400, k = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement("canvas");
+      c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      const g = c.getContext("2d");
+      g.fillStyle = "#ffffff"; g.fillRect(0, 0, c.width, c.height);
+      g.drawImage(img, 0, 0, c.width, c.height);
+      images[slot] = { dataUrl: c.toDataURL("image/jpeg", 0.9), w: img.width, h: img.height, name: file.name };
+      renderStep(); renderDoc();
+    };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+let docTimer = null;
+function changed() {
+  save();
+  clearTimeout(docTimer);
+  docTimer = setTimeout(() => { renderDoc(); refreshDots(); }, 150);
+}
+function refreshDots() {
+  const need = new Set(missing().map(m => m[0]));
+  document.querySelectorAll(".dot").forEach((d, i) => {
+    d.className = `dot ${i === step ? "now" : need.has(i) ? "need" : "done"}`;
+  });
+}
+
+// ---------- Construcción del blueprint (una sola fuente para vista, prompt y PDF) ----------
+function build() {
+  const S = state;
+  const v = (x, fallback) => (x && String(x).trim()) || fallback;
+  const p = v(S.personaje, "[personaje]");
+  const d = v(S.danino, "[obstáculos]");
+  const a = v(S.ayuda, "");
+  const meta = v(S.meta, "[meta]");
+  const n = S.niveles === "3" ? 3 : 2;
+  const mech = MECHS[S.mecanica] || MECHS.esquivar;
+  const ideas = ideaList();
+  const name = v(S.nombre, "[nombre del juego]");
+  const imgLetters = {};
+  let letter = 65;
+  ["portada", "transicion", "personaje", "ayuda"].forEach(k => { if (images[k]) imgLetters[k] = String.fromCharCode(letter++); });
+  const imgRef = k => imgLetters[k] ? ` (Imagen ${imgLetters[k]}, usar exacta)` : "";
+
+  const stages = [];
+  stages.push({
+    name: "Portada",
+    act: "Ve la portada; toca la pantalla para activar la música; presiona «Presiona para jugar», Enter o Espacio.",
+    res: `Muestra la portada de ${name}${imgRef("portada")} a pantalla completa sin recortar, con el botón «Presiona para jugar». Suena ${S.musica} en 8 bits.`,
+    learn: `Presenta el reto y el objetivo: ${v(S.objetivo, "[objetivo de aprendizaje]")}`,
+    tech: "La música arranca en la primera interacción (los navegadores bloquean el sonido automático); un clic en la portada solo activa el audio, no inicia el juego. Botón de silenciar visible."
+  });
+  for (let i = 0; i < n; i++) {
+    const last = i === n - 1;
+    const goal = last ? `${meta} final` : `${meta} intermedia`;
+    const c = { p, d, goal };
+    const t = LEVEL_TUNING[i];
+    stages.push({
+      name: `Nivel ${i + 1}`,
+      act: mech.action(c),
+      res: mech.response(c) + (a ? ` ${a[0].toUpperCase() + a.slice(1)}${imgRef("ayuda")} cae con mucha menor frecuencia, brilla y da +1 vida (máximo 5) con el texto «+1 VIDA».` : "") + (i > 0 && S.evento ? ` ${trimDot(S.evento)}.` : ""),
+      learn: ideas.length ? `Practica: ${trimDot(ideas[i % ideas.length])}.` : "[idea clave]",
+      tech: `Velocidad de caída ×${t.mult}; un obstáculo cada ${t.spawn} cuadros${a ? "; objeto de vida cada 150 cuadros, uno a la vez" : ""}; la mitad de los obstáculos se dirige hacia donde avanza el personaje; nada cae dentro de la meta. Indicador de nivel en el HUD.`
+    });
+    if (!last) {
+      stages.push({
+        name: `Transición ${i + 1}`,
+        act: "Lee el mensaje y presiona el botón para continuar (también Enter o Espacio).",
+        res: `${images.transicion ? `Muestra la Imagen ${imgLetters.transicion} exacta a pantalla completa` : `Muestra a ${p} en pixel art con un globo de diálogo`}${S.transicion ? ` con el mensaje: «${S.transicion}»` : ""}. ${v(S.evento, "Anuncia que el siguiente nivel es más difícil.")}`,
+        learn: "Marca el cambio de situación y prepara al jugador para aplicar lo aprendido en condiciones más difíciles.",
+        tech: "Juego en pausa; la música se detiene y se reanuda sin duplicarse; el personaje vuelve al inicio y se limpian los obstáculos."
+      });
+    }
+  }
+  stages.push({
+    name: "Pérdida de vida",
+    act: `Uno de los obstáculos (${d}) toca a ${p}.`,
+    res: "El juego se pausa y muestra «¡Perdiste una vida!» con una recomendación de seguridad al azar, sin repetir la anterior. Se continúa con un botón, Enter o Espacio.",
+    learn: `Refuerza las ideas clave${S.error ? ` y corrige el error común: ${trimDot(S.error)}` : ""}.`,
+    tech: "Al continuar, se retiran los obstáculos cercanos al personaje para no perder otra vida al instante. Vidas iniciales: 3."
+  });
+  stages.push({
+    name: "Final",
+    act: S.ranking ? "Escribe su nombre y guarda el puntaje; puede jugar de nuevo." : "Puede jugar de nuevo.",
+    res: `Si gana: «¡Llegaste a ${meta}!», +1000 puntos y vidas restantes. Si pierde: mensaje de ánimo y una recomendación.${S.ranking ? " Tabla de los 10 mejores puntajes con medallas y el registro nuevo resaltado." : ""}`,
+    learn: "Pregunta de cierre en pantalla: ¿qué decisión del juego usarías en la vida real?",
+    tech: S.ranking ? "Puntajes en localStorage con try/catch; nombre escapado (sin HTML); un solo guardado por partida." : "Reinicio completo del estado al jugar de nuevo."
+  });
+
+  const spec = [
+    "Un único archivo HTML con CSS y JavaScript incluidos; sin errores en la consola.",
+    "Canvas de 600 × 400 escalado al ancho disponible; imagen nítida (image-rendering: pixelated).",
+    `Estilo visual: ${S.estilo}. Personaje dibujado en el canvas con rasgos reconocibles${images.personaje ? ` según la Imagen ${imgLetters.personaje}` : ""}.`,
+    "Controles: flechas o A/D para moverse y Espacio/↑/W para saltar o acción; botones táctiles grandes ◀ ▶ y ACCIÓN para celular (eventos touch y mouse).",
+    "HUD fijo arriba: vidas como corazones, puntaje con 4 dígitos y estado del nivel.",
+    "Puntaje: +1 por cuadro jugado, +500 al superar un nivel intermedio y +1000 al ganar.",
+    `Música: ${S.musica} en 8 bits con Web Audio API (onda cuadrada); la siguiente nota no empieza antes de que termine la anterior; ninguna cadena de notas se duplica al pausar o reanudar.`,
+    "Imágenes cargadas incrustadas en base64 dentro del HTML; la portada y la imagen de transición se muestran exactas, sin recortar.",
+    `Recomendaciones: entre 12 y 16, correctas y basadas en las ideas clave${tipList().length ? " y las recomendaciones extra" : ""}; sin mitos ni información dudosa.`,
+    "Lenguaje respetuoso: los errores se explican con mensajes amables; sin violencia gráfica.",
+    "Funciona en computador y en celular sin desbordes horizontales."
+  ];
+
+  const checks = [
+    "La portada se ve completa y la música suena después del primer toque.",
+    "El juego empieza solo con el botón, Enter o Espacio.",
+    `Cada nivel se puede superar llegando a la meta (${meta}).`,
+    "Al perder una vida aparece una recomendación distinta a la anterior.",
+    "Al perder las 3 vidas aparece la pantalla de derrota, no la de victoria.",
+    n > 1 ? "Entre niveles aparece la transición y el siguiente nivel es más difícil." : "",
+    a ? "El objeto que da vida aparece mucho menos que los obstáculos y suma una vida." : "",
+    S.ranking ? "El nombre y el puntaje se guardan y aparecen en la tabla." : "",
+    "Los controles táctiles funcionan en el celular.",
+    "Ninguna recomendación ni mensaje contradice las ideas clave."
+  ].filter(Boolean);
+
+  const intro = `Eres un desarrollador experto en videojuegos educativos HTML5. Construye un prototipo funcional y sin errores del juego «${name}» siguiendo este service blueprint. Entrégalo como un único archivo HTML listo para abrir en el navegador. Respeta el objetivo de aprendizaje, la matriz de etapas y la especificación técnica. Antes de entregarlo, juega o prueba cada etapa y verifica los criterios de aceptación.`;
+
+  return { name, intro, stages, spec, checks, ideas, imgLetters, n, mech };
+}
+
+// ---------- Vista previa ----------
+function renderDoc() {
+  const B = build();
+  const m = missing();
+  $("#status").innerHTML = m.length
+    ? `<span class="pill warn">Faltan ${m.length}</span><span>${m.map(x => esc(x[1])).join(" · ")}</span>`
+    : `<span class="pill ok">Listo</span><span>El blueprint tiene todo lo que Claude necesita.</span>`;
+
+  const rows = [
+    ["Acción del jugador", "act"],
+    ["Respuesta del juego", "res"],
+    ["Aprendizaje", "learn"],
+    ["Soporte técnico", "tech"]
+  ];
+  const imgs = Object.entries(B.imgLetters);
+
+  $("#doc").innerHTML = `
+    <section>
+      <p class="eyebrow">Service blueprint para Claude · ${new Date().toLocaleDateString("es-CO", { year: "numeric", month: "long", day: "numeric" })}</p>
+      <p class="gamename">${esc(B.name)}</p>
+      <p class="meta">${esc(state.tema || "[tema]")}${state.publico ? " · " + esc(state.publico) : ""}${state.lugar ? " · " + esc(state.lugar) : ""}</p>
+    </section>
+    <section>
+      <h3>Instrucción para Claude</h3>
+      <p class="prompt-box">${esc(B.intro)}</p>
+    </section>
+    <section>
+      <h3>Ficha pedagógica</h3>
+      <dl class="kv">
+        <dt>Objetivo</dt><dd>${esc(state.objetivo || "[obligatorio]")}</dd>
+        <dt>Ideas clave</dt><dd>${B.ideas.length ? `<ol class="ideas">${B.ideas.map(i => `<li>${esc(i)}</li>`).join("")}</ol>` : "[obligatorio: 3 a 5]"}</dd>
+        <dt>Error a corregir</dt><dd>${esc(state.error || "—")}</dd>
+        <dt>Personaje</dt><dd>${esc(state.personaje || "[obligatorio]")}${state.personajeDesc ? ". " + esc(state.personajeDesc) : ""}</dd>
+        <dt>Escenario</dt><dd>${esc(state.escenario || "[obligatorio]")}</dd>
+        <dt>Mecánica</dt><dd>${esc(B.mech.label)} · ${B.n} niveles</dd>
+      </dl>
+    </section>
+    <section>
+      <h3>Matriz del service blueprint</h3>
+      <div class="tablewrap">
+        <table class="matrix">
+          <thead><tr><th>Capa</th>${B.stages.map(s => `<th>${esc(s.name)}</th>`).join("")}</tr></thead>
+          <tbody>${rows.map(([label, k], ri) => `<tr class="${ri === 1 ? "line-vis" : ""}"><th>${label}</th>${B.stages.map(s => `<td>${esc(s[k])}</td>`).join("")}</tr>`).join("")}</tbody>
+        </table>
+      </div>
+      <p class="legend">La línea punteada es la línea de visibilidad: arriba lo que el jugador ve y hace; abajo lo que enseña y cómo funciona por dentro.</p>
+    </section>
+    <section>
+      <h3>Especificación técnica</h3>
+      <ul class="spec">${B.spec.map(s => `<li>${esc(s)}</li>`).join("")}</ul>
+    </section>
+    <section>
+      <h3>Criterios de aceptación</h3>
+      <ul class="checks">${B.checks.map(s => `<li>${esc(s)}</li>`).join("")}</ul>
+    </section>
+    ${tipList().length ? `<section><h3>Recomendaciones extra</h3><ul class="spec">${tipList().map(t => `<li>${esc(t)}</li>`).join("")}</ul></section>` : ""}
+    <section>
+      <h3>Imágenes adjuntas</h3>
+      ${imgs.length ? `<div class="annex">${imgs.map(([k, L]) => `<figure><img src="${images[k].dataUrl}" alt=""><figcaption>Imagen ${L} · ${esc(IMG_SLOTS[k].label)}</figcaption></figure>`).join("")}</div>`
+        : `<p class="meta">Sin imágenes. Claude dibujará todo en pixel art.</p>`}
+    </section>`;
+}
+
+// ---------- Prompt de texto ----------
+function promptText() {
+  const B = build();
+  const L = [];
+  L.push(`# Service blueprint: ${B.name}`, "", B.intro, "");
+  L.push("## Ficha pedagógica");
+  L.push(`- Tema: ${state.tema}`);
+  if (state.publico) L.push(`- Público: ${state.publico}`);
+  if (state.lugar) L.push(`- Lugar: ${state.lugar}`);
+  L.push(`- Objetivo de aprendizaje: ${state.objetivo}`);
+  L.push("- Ideas clave:"); B.ideas.forEach((x, i) => L.push(`  ${i + 1}. ${x}`));
+  if (state.error) L.push(`- Error común a corregir: ${state.error}`);
+  L.push(`- Personaje: ${state.personaje}${state.personajeDesc ? ". " + state.personajeDesc : ""}`);
+  L.push(`- Escenario: ${state.escenario}`);
+  L.push(`- Mecánica: ${B.mech.label}, ${B.n} niveles`, "");
+  L.push("## Matriz del service blueprint (por etapa)");
+  B.stages.forEach(s => {
+    L.push(`### ${s.name}`);
+    L.push(`- Acción del jugador: ${s.act}`);
+    L.push(`- Respuesta del juego: ${s.res}`);
+    L.push(`- Aprendizaje: ${s.learn}`);
+    L.push(`- Soporte técnico: ${s.tech}`);
+  });
+  L.push("", "## Especificación técnica"); B.spec.forEach(s => L.push(`- ${s}`));
+  L.push("", "## Criterios de aceptación"); B.checks.forEach(s => L.push(`- [ ] ${s}`));
+  if (tipList().length) { L.push("", "## Recomendaciones extra"); tipList().forEach(t => L.push(`- ${t}`)); }
+  const imgs = Object.entries(B.imgLetters);
+  if (imgs.length) { L.push("", "## Imágenes"); imgs.forEach(([k, Lt]) => L.push(`- Imagen ${Lt} (${IMG_SLOTS[k].label}): ${IMG_SLOTS[k].use} Archivo adjunto aparte: ${images[k].name}.`)); }
+  return L.join("\n");
+}
+
+// ---------- PDF ----------
+// Las fuentes estándar del PDF no traen todos los símbolos: se reemplazan por equivalentes simples
+const pdfSafe = s => String(s ?? "")
+  .replace(/← ?→/g, "izquierda y derecha").replace(/[→➜]/g, "->").replace(/←/g, "<-").replace(/↑/g, "arriba").replace(/[◀]/g, "<").replace(/[▶]/g, ">")
+  .replace(/[“”«»]/g, '"').replace(/[‘’]/g, "'").replace(/[–—]/g, "-").replace(/…/g, "...").replace(/×/g, "x")
+  .replace(/[^\x00-\xFF]/g, "");
+
+async function makePdf() {
+  const { jsPDF } = window.jspdf;
+  const B = build();
+  const doc = new jsPDF({ unit: "mm", format: "a4" });
+  const blue = [36, 87, 214], ink = [20, 36, 74], muted = [85, 100, 138];
+  let W = 210, H = 297, M = 16, y = M;
+
+  const ensure = h => { if (y + h > H - M) { doc.addPage("a4", "portrait"); W = 210; H = 297; y = M; } };
+  const text = (t, size = 10.5, style = "normal", color = ink, gap = 1.5) => {
+    doc.setFont("helvetica", style); doc.setFontSize(size); doc.setTextColor(...color);
+    const lines = doc.splitTextToSize(pdfSafe(t), W - 2 * M);
+    const lh = size * 0.42;
+    lines.forEach(line => { ensure(lh); doc.text(line, M, y + lh * 0.8); y += lh; });
+    y += gap;
+  };
+  const heading = t => {
+    ensure(14); y += 3;
+    doc.setDrawColor(...blue); doc.setLineWidth(0.4); doc.line(M, y, W - M, y); y += 5;
+    text(t.toUpperCase(), 9.5, "bold", blue, 1.5);
+  };
+  const bullets = (arr, mark = "-") => arr.forEach(s => {
+    doc.setFont("helvetica", "normal"); doc.setFontSize(10.5); doc.setTextColor(...ink);
+    const lines = doc.splitTextToSize(pdfSafe(s), W - 2 * M - 6);
+    const lh = 4.4;
+    lines.forEach((line, i) => { ensure(lh); if (i === 0) doc.text(mark, M, y + lh * 0.8); doc.text(line, M + 6, y + lh * 0.8); y += lh; });
+    y += 1;
+  });
+
+  // Página 1: encabezado, instrucción y ficha
+  doc.setFillColor(...blue); doc.rect(0, 0, W, 30, "F");
+  doc.setTextColor(255, 255, 255); doc.setFont("helvetica", "bold"); doc.setFontSize(9);
+  doc.text("SERVICE BLUEPRINT PARA CLAUDE  |  RUTA ARCADE EDUCATIVA", M, 11);
+  doc.setFontSize(20); doc.text(pdfSafe(B.name), M, 22);
+  y = 38;
+  text([state.tema, state.publico, state.lugar].filter(Boolean).join("  |  "), 10, "normal", muted, 1);
+  text(`Fecha: ${new Date().toLocaleDateString("es-CO")}`, 9, "normal", muted, 2);
+
+  heading("Instrucción para Claude");
+  text(B.intro, 10.5, "normal", ink, 2);
+  text("Archivos que acompañan este PDF: las imágenes originales listadas al final (si las hay). Incrústalas en base64 dentro del HTML.", 9.5, "italic", muted, 2);
+
+  heading("Ficha pedagógica");
+  const ficha = [
+    ["Objetivo de aprendizaje", state.objetivo],
+    ["Ideas clave", B.ideas.map((x, i) => `${i + 1}. ${x}`).join("\n")],
+    ["Error común a corregir", state.error || "-"],
+    ["Personaje", state.personaje + (state.personajeDesc ? ". " + state.personajeDesc : "")],
+    ["Escenario", state.escenario],
+    ["Estilo visual", state.estilo],
+    ["Mecánica", `${B.mech.label}, ${B.n} niveles. Meta: ${state.meta}`],
+    ["Daña / ayuda", `Quitan vidas: ${state.danino}${state.ayuda ? `. Da una vida: ${state.ayuda}` : ""}`],
+    ["Música", state.musica]
+  ];
+  doc.autoTable({
+    startY: y, margin: { left: M, right: M },
+    body: ficha.map(([k, v]) => [pdfSafe(k), pdfSafe(v)]),
+    theme: "grid",
+    styles: { font: "helvetica", fontSize: 9.5, cellPadding: 2.2, textColor: ink, lineColor: [205, 214, 234], valign: "top" },
+    columnStyles: { 0: { cellWidth: 42, fontStyle: "bold", fillColor: [236, 241, 252] } }
+  });
+  y = doc.lastAutoTable.finalY + 4;
+
+  // Página 2: matriz en horizontal
+  doc.addPage("a4", "landscape"); W = 297; H = 210; y = M;
+  text("MATRIZ DEL SERVICE BLUEPRINT", 11, "bold", blue, 1);
+  text("Línea de visibilidad entre «Respuesta del juego» y «Aprendizaje»: arriba lo que el jugador ve y hace; abajo lo que enseña y cómo funciona por dentro.", 8.5, "italic", muted, 2);
+  const rowsDef = [["Acción del jugador", "act"], ["Respuesta del juego", "res"], ["Aprendizaje", "learn"], ["Soporte técnico", "tech"]];
+  doc.autoTable({
+    startY: y, margin: { left: 10, right: 10 },
+    head: [["Capa", ...B.stages.map(s => pdfSafe(s.name))]],
+    body: rowsDef.map(([label, k]) => [label, ...B.stages.map(s => pdfSafe(s[k]))]),
+    theme: "grid",
+    styles: { font: "helvetica", fontSize: B.stages.length > 6 ? 6.6 : 7.4, cellPadding: 1.6, textColor: ink, lineColor: [205, 214, 234], valign: "top", overflow: "linebreak" },
+    headStyles: { fillColor: blue, textColor: 255, fontStyle: "bold", fontSize: 8 },
+    columnStyles: { 0: { cellWidth: 24, fontStyle: "bold", fillColor: [236, 241, 252] } },
+    didDrawCell: data => {
+      if (data.section === "body" && data.row.index === 1) {
+        doc.setDrawColor(...blue); doc.setLineWidth(0.6); doc.setLineDashPattern([1.5, 1], 0);
+        doc.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y + data.cell.height);
+        doc.setLineDashPattern([], 0);
+      }
+    }
+  });
+
+  // Página 3: especificación, criterios, recomendaciones, mejora
+  doc.addPage("a4", "portrait"); W = 210; H = 297; y = M;
+  heading("Especificación técnica");
+  bullets(B.spec);
+  heading("Criterios de aceptación (verificar antes de entregar)");
+  bullets(B.checks, "[ ]");
+  if (tipList().length) { heading("Recomendaciones extra al perder una vida"); bullets(tipList()); }
+  heading("Cómo pedir mejoras");
+  text("Fórmula: En la etapa ___, cuando el jugador ___, quiero que el juego ___. Si algo falla: El juego no responde al ___. Revisa el código y corrígelo sin cambiar el resto.", 10, "normal", ink, 2);
+
+  // Anexos: imágenes
+  const imgs = Object.entries(B.imgLetters);
+  imgs.forEach(([k, L]) => {
+    const im = images[k];
+    doc.addPage("a4", "portrait"); W = 210; H = 297; y = M;
+    heading(`Imagen ${L}: ${IMG_SLOTS[k].label}`);
+    text(`${IMG_SLOTS[k].use} Archivo original: ${im.name} (${im.w} x ${im.h} px). Adjunta el original junto con este PDF.`, 10, "normal", ink, 3);
+    const maxW = W - 2 * M, maxH = H - y - M;
+    const k2 = Math.min(maxW / im.w, maxH / im.h);
+    const w = im.w * k2, h = im.h * k2;
+    doc.addImage(im.dataUrl, "JPEG", M + (maxW - w) / 2, y, w, h);
+  });
+
+  // Pie de página
+  const pages = doc.getNumberOfPages();
+  for (let i = 1; i <= pages; i++) {
+    doc.setPage(i);
+    const pw = doc.internal.pageSize.getWidth(), ph = doc.internal.pageSize.getHeight();
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...muted);
+    doc.text(pdfSafe(`${B.name} - service blueprint - página ${i} de ${pages}`), pw / 2, ph - 7, { align: "center" });
+  }
+  return doc;
+}
+
+// ---------- Acciones ----------
+function flash(msg, err) {
+  const st = $("#status");
+  const t = document.createElement("span");
+  t.className = "toast" + (err ? " err" : "");
+  t.textContent = msg;
+  st.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+}
+
+$("#btnCopy").addEventListener("click", () => {
+  const txt = promptText();
+  navigator.clipboard.writeText(txt).then(() => flash("Prompt copiado. Pégalo en Claude junto con tus imágenes."))
+    .catch(() => {
+      const ta = document.createElement("textarea");
+      ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      let ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+      ta.remove();
+      flash(ok ? "Prompt copiado." : "No se pudo copiar automáticamente. Usa el PDF.", !ok);
+    });
+});
+
+let downloads = null;
+let downloadsChecked = false;
+
+function pdfMsg(kind, title, detail, opts = {}) {
+  const box = $("#pdfMsg");
+  box.hidden = false;
+  box.className = "pdfmsg " + kind;
+  box.innerHTML = `<b>${esc(title)}</b>${detail ? `<span>${detail}</span>` : ""}${opts.code ? `<span class="code">Código: ${esc(opts.code)}</span>` : ""}<div class="row"></div>`;
+  const row = box.querySelector(".row");
+  (opts.buttons || []).forEach(([label, fn, cls]) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = cls || "ghost"; b.textContent = label;
+    b.addEventListener("click", fn);
+    row.appendChild(b);
+  });
+  if (!row.children.length) row.remove();
+}
+
+async function getDownloads() {
+  if (downloads) return downloads;
+  if (!(window.claude && typeof window.claude.use === "function")) return null;
+  try { downloads = await window.claude.use("downloads"); } catch (e) { downloads = null; }
+  downloadsChecked = true;
+  return downloads;
+}
+
+const copyFallback = ["Copiar prompt en su lugar", () => $("#btnCopy").click(), "btn"];
+
+$("#btnPdf").addEventListener("click", async () => {
+  const btn = $("#btnPdf");
+  const m = missing();
+  if (m.length) {
+    pdfMsg("err", `Faltan ${m.length} respuestas para generar el PDF`, esc(m.map(x => x[1]).join(", ")) + ".",
+      { buttons: [["Ir a la primera que falta", () => { step = m[0][0]; renderStep(); $("#quiz").scrollIntoView({ behavior: "smooth" }); }, "btn"]] });
+    return;
+  }
+  if (!window.jspdf || !window.jspdf.jsPDF || typeof new window.jspdf.jsPDF().autoTable !== "function") {
+    pdfMsg("err", "El generador de PDF no cargó", "La red bloqueó la librería de PDF. Recarga la página; mientras tanto puedes copiar el prompt.", { buttons: [copyFallback] });
+    return;
+  }
+  btn.disabled = true;
+  const label = btn.textContent;
+  btn.textContent = "Generando…";
+  try {
+    pdfMsg("wait", "Generando el PDF…", "");
+    let doc;
+    try { doc = await makePdf(); }
+    catch (e) {
+      pdfMsg("err", "No se pudo armar el PDF", "Ocurrió un error al construir el documento. Copia el prompt y pégalo en Claude.", { code: (e && e.message) || String(e), buttons: [copyFallback] });
+      return;
+    }
+    const blob = doc.output("blob");
+    const filename = `blueprint-${slug(state.nombre)}.pdf`;
+    const dl = await getDownloads();
+    if (!dl && !window.claude) {
+      // Fuera del visor de Claude (archivo abierto en el navegador): descarga directa
+      try {
+        doc.save(filename);
+        pdfMsg("ok", "Descarga iniciada", `Tu navegador está guardando <b>${esc(filename)}</b> (${Math.round(blob.size / 1024)} KB). Búscalo en tu carpeta de Descargas y sigue el paso 3.`);
+        return;
+      } catch (e) {}
+    }
+    if (!dl) {
+      pdfMsg("err", "Esta vista no permite guardar archivos",
+        "Abre la página en <b>claude.ai</b> desde un navegador (Chrome, Edge, Safari o Firefox) con tu sesión iniciada y vuelve a intentarlo. Si no puedes, copia el prompt: tiene el mismo contenido que el PDF.",
+        { code: window.claude ? "downloads no disponible" : "fuera del visor de Claude", buttons: [copyFallback] });
+      return;
+    }
+    pdfMsg("wait", "Confirma la descarga", `Claude te mostrará una ventana para guardar <b>${esc(filename)}</b> (${Math.round(blob.size / 1024)} KB). Acéptala para descargar el archivo.`);
+    await dl.save({ filename, data: blob });
+    pdfMsg("ok", "PDF descargado", `Se guardó <b>${esc(filename)}</b>. Ahora sigue el paso 3: adjúntalo en Claude junto con tus imágenes.`);
+  } catch (e) {
+    const code = (e && e.code) || "desconocido";
+    const msgs = {
+      declined: ["Descarga cancelada", "Cerraste o rechazaste la ventana de confirmación. Pulsa «Descargar PDF» de nuevo y acepta."],
+      rate_limited: ["Hay una descarga pendiente", "Ya hay una ventana de confirmación abierta. Revísala o espera unos segundos y vuelve a intentarlo."],
+      too_large: ["El PDF es demasiado grande", "Quita alguna imagen o usa imágenes más livianas y vuelve a intentarlo."],
+      unavailable: ["Esta vista no permite guardar archivos", "Abre la página en claude.ai desde un navegador y vuelve a intentarlo, o copia el prompt."],
+      not_granted: ["La descarga no está permitida", "Revisa los permisos de la página en el menú del artifact, o copia el prompt."]
+    };
+    const [t, d] = msgs[code] || ["No se pudo descargar el PDF", "Vuelve a intentarlo. Si sigue fallando, copia el prompt: tiene el mismo contenido."];
+    pdfMsg("err", t, d, { code: code + (e && e.message ? " · " + e.message : ""), buttons: [copyFallback] });
+  } finally {
+    btn.disabled = false;
+    btn.textContent = label;
+  }
+});
+
+$("#btnPrev").addEventListener("click", () => { if (step > 0) { step--; renderStep(); } });
+$("#btnNext").addEventListener("click", () => {
+  if (step < STEPS.length - 1) { step++; renderStep(); }
+  else document.querySelector(".bp").scrollIntoView({ behavior: "smooth", block: "start" });
+});
+$("#dots").addEventListener("click", e => { const b = e.target.closest("[data-go]"); if (b) { step = +b.dataset.go; renderStep(); } });
+$("#btnExample").addEventListener("click", () => { state = Object.assign({}, EMPTY, EXAMPLE); save(); renderStep(); renderDoc(); flash("Ejemplo cargado: MinutoShake."); });
+$("#btnReset").addEventListener("click", () => { $("#resetConfirm").hidden = false; });
+$("#btnResetNo").addEventListener("click", () => { $("#resetConfirm").hidden = true; });
+$("#btnResetYes").addEventListener("click", () => {
+  state = Object.assign({}, EMPTY); Object.keys(images).forEach(k => delete images[k]);
+  save(); step = 0; $("#resetConfirm").hidden = true; renderStep(); renderDoc();
+});
+$("#quiz").addEventListener("submit", e => e.preventDefault());
+
+// Primera vista: si no hay respuestas guardadas, se muestra el ejemplo para que se entienda el resultado
+(function init() {
+  let hasDraft = false;
+  try { hasDraft = !!localStorage.getItem("ruta-arcade"); } catch (e) {}
+  if (!hasDraft) state = Object.assign({}, EMPTY, EXAMPLE);
+  renderStep();
+  renderDoc();
+  if (!hasDraft) flash("Estás viendo el ejemplo MinutoShake. Pulsa «Empezar en blanco» para crear el tuyo.");
+  getDownloads();
+})();
+</script>
